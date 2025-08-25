@@ -48,64 +48,110 @@
 <body>
 <div class="container">
     <h2>Choose your Own Adventure! With SpringAI</h2>
-    <form action="#" th:action="@{/chat/start}" th:method="post">
-        <div class="form-group">
-            <label for="genre">Enter a Genre:</label>
-            <input type="text" id="genre" name="genre" placeholder="E.g., Fantasy, Action, Drama, Thriller..." required>
-        </div>
-        <div class="form-group">
-            <label for="numCharacters">Number of Characters:</label>
-            <input type="number" id="numCharacters" name="numCharacters" min="1" placeholder="E.g., 5" required>
-        </div>
+    <!--<div th:if="${storyStarted}">-->
+        <form action="#" th:action="@{/chat/start}" th:method="post">
+            <div class="form-group">
+                <label for="genre">Enter a Genre:</label>
+                <input type="text" id="genre" name="genre" placeholder="E.g., Fantasy, Action, Drama, Thriller..." required>
+            </div>
+            <div class="form-group">
+                <label for="numCharacters">Number of Characters:</label>
+                <input type="number" id="numCharacters" name="numCharacters" min="1" placeholder="E.g., 5" required>
+            </div>
 
-        <div class="form-group">
-            <label for="nameDescription">Name and Description of Main Character:</label>
-            <input type="text" id="nameDescription" name="nameDescription" placeholder="Frodo, has curly brown hair and wears brown clothing."required>
-        </div>
+            <div class="form-group">
+                <label for="nameDescription">Name and Description of Main Character:</label>
+                <input type="text" id="nameDescription" name="nameDescription" placeholder="Frodo, has curly brown hair and wears brown clothing."required>
+            </div>
 
-        <!--
-      <div class="form-group">
-          <label>Name and Description of Main Character</label>
-          Text <input type="radio" onclick="javascript:buttonCheck();" name="yesno" id="textCheck">
-          Audio <input type="radio" onclick="javascript:buttonCheck();" name="yesno" id="audioCheck">
-          Image <input type="radio" onclick="javascript:buttonCheck();" name="yesno" id="imageCheck"><br>
+            <!--
+          <div class="form-group">
+              <label>Name and Description of Main Character</label>
+              Text <input type="radio" onclick="javascript:buttonCheck();" name="yesno" id="textCheck">
+              Audio <input type="radio" onclick="javascript:buttonCheck();" name="yesno" id="audioCheck">
+              Image <input type="radio" onclick="javascript:buttonCheck();" name="yesno" id="imageCheck"><br>
 
 
-          <!div id="ifText" style="display:none">
-              <label for="text">Enter character name and description: </label>
-              <textarea id="text" name="text" placeholder="Frodo, has curly brown hair and wears brown clothing..."></textarea><br>
-          </div>
-          <div id="ifAudio" style="display:none">
-              <label for="audio">Upload audio file:</label>
-              <input type="file" id="audio" name="audio" accept="audio/*"><br>
-          </div>
-          <div id="ifImage" style="display:none">
-              <label for="image">Upload image:</label>
-              <input type="file" id="image" name="image" accept="image/*"><br>
-          </div>
-          -->
+              <!div id="ifText" style="display:none">
+                  <label for="text">Enter character name and description: </label>
+                  <textarea id="text" name="text" placeholder="Frodo, has curly brown hair and wears brown clothing..."></textarea><br>
+              </div>
+              <div id="ifAudio" style="display:none">
+                  <label for="audio">Upload audio file:</label>
+                  <input type="file" id="audio" name="audio" accept="audio/*"><br>
+              </div>
+              <div id="ifImage" style="display:none">
+                  <label for="image">Upload image:</label>
+                  <input type="file" id="image" name="image" accept="image/*"><br>
+              </div>
+              -->
 
-        <br>
+            <br>
 
-        <div class="form-group">
-            <label for="choices">Length of Adventure (in decisions):</label>
-            <input type="text" id="choices" name="choices" placeholder="E.g., 5 decisions, 10 decisions, 15 decisions..." required>
-        </div>
-        <div class="form-group">
-            <label for="complexity">Complexity of Adventure:</label>
-            <input type="text" id="complexity" name="complexity" placeholder="E.g., High, Medium, Low" required>
-        </div>
-        <div class="form-group">
-            <label for="location">Location of Adventure:</label>
-            <input type="text" id="location" name="location" placeholder="It could be anywhere!" required>
-        </div>
-        <button type="submit">Start story</button>
-    </form>
+            <div class="form-group">
+                <label for="choices">Length of Adventure (in decisions):</label>
+                <input type="text" id="choices" name="choices" placeholder="E.g., 5 decisions, 10 decisions, 15 decisions..." required>
+            </div>
+            <div class="form-group">
+                <label for="complexity">Complexity of Adventure:</label>
+                <input type="text" id="complexity" name="complexity" placeholder="E.g., High, Medium, Low" required>
+            </div>
+            <div class="form-group">
+                <label for="location">Location of Adventure:</label>
+                <input type="text" id="location" name="location" placeholder="It could be anywhere!" required>
+            </div>
+            <button type="submit">Start story</button>
+        </form>
+    <!--</div>-->
 
+    <!--
     <div class="response" th:if="${response}" style="max-width: 600px; margin: 20px auto; padding: 20px; background-color: #e7f3fe; border: 1px solid #b3d7ff; border-radius: 8px;">
         <h2 style="color: #333;">Response:</h2>
         <p th:text="${response}" style="color: #333;">Chat assistant response will appear here.</p>
     </div>
+    -->
+
+    <div th:if="${storyStarted}">
+        <div class="response" th:if="${response}" style="max-width: 600px; margin: 20px auto; padding: 20px; background-color: #e7f3fe; border: 1px solid #b3d7ff; border-radius: 8px;">
+            <h2 style="color: #333;">Response:</h2>
+            <p th:text="${story}"></p>
+            <form action="/chat/start" method="post">
+                <div th:each="choice: ${choicesResponse}">
+                    <input type="radio" th:value="${choice}" th:text="${choice}" name="choice"/>
+                </div>
+                <!--<img src="{image}" title="image" alt="Initial story image" width="300" height="200" style="border: 2px solid black;">-->
+                <button type="submit">Send</button>
+            </form>
+        </div>
+
+
+        <div class="progressResponse" th:if="${progressResponse}" style="max-width: 600px; margin: 20px auto; padding: 20px; background-color: #e7f3fe; border: 1px solid #b3d7ff; border-radius: 8px;">
+            <h2 style="color: #333;">Response:</h2>
+            <p th:text="${story}"></p>
+            <form action="/chat/progress" method="post">
+                <div th:each="choice: ${choicesResponse}">
+                    <input type="radio" th:value="${choice}" th:text="${choice}" name="choice"/>
+                </div>
+                <button type="submit">Send</button>
+            </form>
+        </div>
+    </div>
+
+    <div th:if="${storyEnded}">
+        <h2 style="color: #333;">Ending:</h2>
+        <p th:text="${endingResponse}"></p>
+    </div>
+    <!--
+    <div>
+        <p th:text="${story}"></p>
+        <form>
+            <div th:each="choice: ${choicesResponse}">
+                <input type="radio" th:value="${choice}" th:text="${choice}" name="choice"/>
+            </div>
+            <button type="submit">Send</button>
+        </form>
+    </div>
+    -->
 </div>
 </body>
 </html>
