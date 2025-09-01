@@ -143,20 +143,23 @@ public class AdventureService {
     public ChatResponse endStory() {
 
         String story = storyStatus.getStory();
-        String lastChoice = storyStatus.getLastChoice();
+        //String lastChoice = storyStatus.getLastChoice();
 
         String template = "You're narrating a choose your own adventure story."
                 + "Context:\n"
                 + "-Story: {story}\n"
                 + "Task:\n"
-                + "-Generate an ending according to the {story} so far, the last choice {lastChoice} and the main " +
+                + "-Generate an ending according to the {story} so far and the main " +
                 "character's mental and physical state. The ending can be good, neutral or bad depending on the main " +
                 "character's mental and physical state. Let the user know the story has finished.";
 
         PromptTemplate promptTemplate = new PromptTemplate(template);
 
+        //Prompt prompt = promptTemplate
+        //        .create(Map.of("story", story, "lastChoice", lastChoice));
+
         Prompt prompt = promptTemplate
-                .create(Map.of("story", story, "lastChoice", lastChoice));
+                .create(Map.of("story", story));
 
         ChatResponse endingResponse = chatClient.prompt(prompt).call().chatResponse();
         this.storyStatus.eraseSession(this.storyStatus);

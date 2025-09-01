@@ -112,18 +112,19 @@
     -->
 
     <div th:if="${storyStarted}">
-        <div class="response" th:if="${response}" style="max-width: 600px; margin: 20px auto; padding: 20px; background-color: #e7f3fe; border: 1px solid #b3d7ff; border-radius: 8px;">
-            <h2 style="color: #333;">Response:</h2>
-            <p th:text="${story}"></p>
-            <form action="/chat/progress" method="post">
-                <div th:each="choice: ${choicesResponse}">
-                    <input type="radio" th:value="${choice}" th:text="${choice}" name="choice"/>
-                </div>
-                <!--<img src="{image}" title="image" alt="Initial story image" width="300" height="200" style="border: 2px solid black;">-->
-                <button type="submit">Send</button>
-            </form>
+        <div th:if="${isProgress}">
+            <div class="response" th:if="${response}" style="max-width: 600px; margin: 20px auto; padding: 20px; background-color: #e7f3fe; border: 1px solid #b3d7ff; border-radius: 8px;">
+                <h2 style="color: #333;">Response:</h2>
+                <p th:text="${story}"></p>
+                <form action="/chat/progress" method="post">
+                    <div th:each="choice: ${choicesResponse}">
+                        <input type="radio" th:value="${choice}" th:text="${choice}" name="choice"/>
+                    </div>
+                    <!--<img src="{image}" title="image" alt="Initial story image" width="300" height="200" style="border: 2px solid black;">-->
+                    <button type="submit">Send</button>
+                </form>
+            </div>
         </div>
-
 
         <div class="progressResponse" th:if="${progressResponse}" style="max-width: 600px; margin: 20px auto; padding: 20px; background-color: #e7f3fe; border: 1px solid #b3d7ff; border-radius: 8px;">
             <h2 style="color: #333;">Response:</h2>
@@ -135,7 +136,9 @@
                 <div th:each="choice: ${choicesResponse}">
                     <input type="radio" th:value="${choice}" th:text="${choice}" name="choice"/>
                 </div>
-                <button type="submit">Send</button>
+                <div th:if="${storyEnded}">
+                    <button type="submit">Send</button>
+                </div>
             </form>
         </div>
     </div>

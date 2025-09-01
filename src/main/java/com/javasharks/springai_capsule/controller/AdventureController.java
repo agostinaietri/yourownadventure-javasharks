@@ -126,9 +126,12 @@ public class AdventureController {
         String progressResponse = content.getResult().getOutput().getText();
 
         String[] parts = progressResponse.split("Choices:", 2);
+        String[] choicesResponse = new String[0];
+        if(parts.length > 1) {
+            choicesResponse = parts[1].trim().split("\n");
+        }
 
         String storyUpdate = parts[0].trim();
-        String[] choicesResponse = parts[1].trim().split("\n");
 
         model.addAttribute("storyStarted", true);
         model.addAttribute("progressResponse", progressResponse);
@@ -136,6 +139,9 @@ public class AdventureController {
         model.addAttribute("lastChoice", lastChoice);
         model.addAttribute("choicesResponse", Arrays.asList(choicesResponse));
 
+        boolean isProgress = true;
+
+        model.addAttribute("isProgress", isProgress);
         return "AdventureHelper.html";
     }
 
@@ -153,6 +159,7 @@ public class AdventureController {
 
         return "AdventureHelper.html";
     }
+
 
     /*
     @Configuration
