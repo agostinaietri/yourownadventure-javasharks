@@ -103,6 +103,7 @@ public class AdventureController {
 
         // flag for front-end (hides form)
         boolean storyStarted = true;
+        boolean storyEnded = false;
         // updates game session
         //this.storyStatus.setStoryEnded(false);
         //this.storyStatus.setDecisions(choices);
@@ -111,10 +112,13 @@ public class AdventureController {
         //Image image = getImage("Generate an according image for the introduction of the story in {story}");
 
         model.addAttribute("storyStarted", true);
+        model.addAttribute("storyEnded", storyEnded);
         model.addAttribute("response", response);
         model.addAttribute("story", story);
         model.addAttribute("choicesResponse", Arrays.asList(choicesResponse));
         //model.addAttribute("image", image);
+        boolean showForm = true;
+        model.addAttribute("showForm", showForm);
 
         return "AdventureHelper.html";
     }
@@ -129,6 +133,9 @@ public class AdventureController {
         String[] choicesResponse = new String[0];
         if(parts.length > 1) {
             choicesResponse = parts[1].trim().split("\n");
+            model.addAttribute("storyEnded", false);
+        } else {
+            model.addAttribute("storyEnded", true);
         }
 
         String storyUpdate = parts[0].trim();

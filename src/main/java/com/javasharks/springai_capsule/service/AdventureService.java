@@ -39,7 +39,7 @@ public class AdventureService {
                 + "Total choices in the story: {choices}, these can range from 5, 10 and up to 20."
                 + "Number of choices per turn: {complexity}, that is: (High: 5 choices per turn), (Med: 3 choices), (Low: 2 choices)"
                 + "Location where the story takes place: {location}"
-                + "Provide the user with exactly {choices} choices, one below the other with the text Choices as title, separate from the story.";
+                + "Provide the user with exactly {choices} choices, one below the other with the text Choices as title, separate from the story. Don't provide anything below that.";
 
         PromptTemplate promptTemplate = new PromptTemplate(template);
 
