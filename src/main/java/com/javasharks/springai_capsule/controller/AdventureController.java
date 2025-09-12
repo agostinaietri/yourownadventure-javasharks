@@ -19,10 +19,18 @@ import org.springframework.ai.image.Image;
 //import org.springframework.ai.image.ImageClient;
 import org.springframework.ai.image.ImagePrompt;
 import org.springframework.ai.image.ImageResponse;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 //import org.springframework.ai.openai.OpenAiImageOptions;
 
+import java.io.IOException;
 import java.lang.reflect.Array;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.util.Arrays;
+import java.util.Base64;
 import java.util.List;
 
 @Controller
@@ -34,25 +42,52 @@ public class AdventureController {
     private ChatClient.Builder chatClientBuilder;
     private ChatClient chatClient;
 
+    // client for generating image
     /*
     @Autowired
     private ImageClient openAiImageClient;
+    */
+
+    // folder where audio inputs will be saved
+    //private static final String UPLOAD_DIR = "/Users/agostina.lucia.ietri/Desktop/springai-audios";
+
+    /*
+    @PostMapping("/form/speechToText")
+    public String speechToText(@RequestParam("file") MultipartFile file, Model model,
+                               RedirectAttributes redirectAttributes) {
+        if(file.isEmpty()) {
+            model.addAttribute("message", "Please select a file to upload");
+            return "speechToText";
+        }
+
+        try {
+            // make sure directory exists
+            Path uploadDir = Paths.get(UPLOAD_DIR);
+            if(Files.notExists(uploadDir)) {
+                //create it if it doesn't
+                Files.createDirectories(uploadDir);
+            }
+
+            //save input file to folder
+            Path path = uploadDir.resolve(file.getOriginalFilename());
+            Files.write(path, file.getBytes(), StandardOpenOption.CREATE);
+            // generate text, add to model
+            String speechToText = service.speechToText(path.toString());
+            model.addAttribute("transcription", transcription);
+        } catch (IOException e) {
+            e.printStackTrace();
+            model.addAttribute("message", "Failed to upload file");
+        }
+
+        return "AdventureHelper.html";
+    }
     */
 
     @Autowired
     private AdventureService adventureService;
 
     /*
-    @Bean
-    public ChatMemory chatMemory() {
-        return MessageWindowChatMemory.builder()
-                .chatMemoryRepository(repository)
-                .maxMessages(20)
-                .build();
-    }*/
-
-    /*
-    // method that will be called upon generating the initial part of the story
+    // method that will be called upon generating the initial part of the story and the ending
     // the result will be associated to the modal for startStory
     public Image getImage(@PathVariable String imagePrompt){
         ImageResponse response = openAiImageClient.call(
@@ -70,7 +105,6 @@ public class AdventureController {
 
     @GetMapping("/ask")
     public String generate(@RequestParam("promptMessage") String promptMessage) {
-        //return aiService.generateResult(promptMessage);
         return chatClient.prompt()
                 .user(promptMessage)
                 .call()
@@ -109,6 +143,7 @@ public class AdventureController {
         //this.storyStatus.setDecisions(choices);
         //this.storyStatus.storyUpdate(story);
 
+        // generates image for story introduction
         //Image image = getImage("Generate an according image for the introduction of the story in {story}");
 
         model.addAttribute("storyStarted", true);
@@ -116,6 +151,7 @@ public class AdventureController {
         model.addAttribute("response", response);
         model.addAttribute("story", story);
         model.addAttribute("choicesResponse", Arrays.asList(choicesResponse));
+        // adding image to model for template to consume
         //model.addAttribute("image", image);
         boolean showForm = true;
         model.addAttribute("showForm", showForm);
@@ -157,27 +193,22 @@ public class AdventureController {
         ChatResponse content = adventureService.endStory();
         String endingResponse = content.getResult().getOutput().getText();
 
+        // generates image for ending
         //Image image = getImage("Generate an according image for the ending of the story in {story}");
 
         boolean storyEnded = true;
         model.addAttribute("storyEnded", storyEnded);
         model.addAttribute("endingResponse", endingResponse);
+        // adding image to model for template to consume
         //model.addAttribute("image", image);
+
+        //calling method for returning audio for ending
+        //byte[] audioBytes = adventureService.textToSpeech(story);
+        //String base64Audio = Base64.getEncoder().encodeToString(audioBytes);
+
+        //add audio to model
+        //model.addAttribute("audio-ending", base64Audio);
 
         return "AdventureHelper.html";
     }
-
-
-    /*
-    @Configuration
-    public static class ChatMemoryConfig {
-        @Bean
-        public ChatMemory chatMemory(ChatMemoryRepository repository) {
-            return MessageWindowChatMemory.builder()
-                    .chatMemoryRepository(repository)
-                    .maxMessages(20)
-                    .build();
-        }
-    }
-    */
 }

@@ -1,6 +1,8 @@
 package com.javasharks.springai_capsule.service;
 
 import com.javasharks.springai_capsule.StoryStatus;
+import org.springframework.ai.audio.transcription.AudioTranscription;
+import org.springframework.ai.audio.transcription.AudioTranscriptionPrompt;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.chat.client.advisor.MessageChatMemoryAdvisor;
 import org.springframework.ai.chat.memory.ChatMemory;
@@ -8,6 +10,7 @@ import org.springframework.ai.chat.model.ChatResponse;
 import org.springframework.ai.chat.prompt.Prompt;
 import org.springframework.ai.chat.prompt.PromptTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.FileSystemResource;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
@@ -26,6 +29,49 @@ public class AdventureService {
                 .defaultAdvisors(MessageChatMemoryAdvisor.builder(chatMemory).build())
                 .build();
     }
+
+    // inject audio model
+
+    //@Autowired
+    //private OpenAiAudioTranscriptionModel openAiAudioTranscriptionModel;
+
+    //@Autowired
+    //private OpenAiAudioSpeechModel openAiAudioSpeechModel;
+
+    // method that expects file to transcribe to English
+    /*
+    public String speechToText(String path) {
+        OpenAiAudioTranscriptionOptions options = OpenAiAudioTranscriptionOptions
+                .builder()
+                .withLanguage("en")
+                .withResponseFormat(TranscriptResponseFormat.TEXT)
+                .build();
+        AudioTranscriptionPrompt transcriptionPrompt = new AudioTranscription(
+                new FileSystemResource(path), options);
+        return openAiAudioTranscriptionModel.call(transcriptionPrompt).getResult().getOutput();
+    }
+    */
+
+    //method that returns audio from text input
+    /*
+    public byte[] textToSpeech(String text) {
+        return openAiAudioSpeechModel.call(text);
+    }
+    */
+
+    //model for audio transcription
+    //@Autowired
+    //private OpenAiAudioTranscriptionModel openAiAudioTranscriptionModel;
+
+    /*
+    //turns speech audio to text
+    public String speechToText(String path) {
+        AudioTranscriptionPrompt audioTranscriptionPrompt = new AudioTranscriptionPrompt(
+                new FileSystemResource(path));
+        return openAiAudioTranscriptionModel.call(audioTranscriptionPrompt).getResult().getOutput();
+    }
+
+    */
 
     public ChatResponse storyInitializer(String genre, int numCharacters, String nameDescription, int choices, String complexity, String location) {
         this.storyStatus = new StoryStatus();
