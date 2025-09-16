@@ -15,6 +15,7 @@ import java.util.List;
 @Component
 public class DataInitializer {
 
+    /*
     @Autowired
     private VectorStore vectorStore;
 
@@ -25,5 +26,6 @@ public class DataInitializer {
         List<Document> documents = tokenTextSplitter.split(sharkCarsReader.get());
         vectorStore.add(documents);
     }
+    */
 
 }

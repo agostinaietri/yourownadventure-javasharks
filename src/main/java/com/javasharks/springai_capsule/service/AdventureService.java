@@ -1,30 +1,52 @@
 package com.javasharks.springai_capsule.service;
 
 import com.javasharks.springai_capsule.StoryStatus;
-import org.springframework.ai.audio.transcription.AudioTranscription;
-import org.springframework.ai.audio.transcription.AudioTranscriptionPrompt;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.chat.client.advisor.MessageChatMemoryAdvisor;
 import org.springframework.ai.chat.memory.ChatMemory;
 import org.springframework.ai.chat.model.ChatResponse;
 import org.springframework.ai.chat.prompt.Prompt;
 import org.springframework.ai.chat.prompt.PromptTemplate;
+import org.springframework.ai.document.Document;
+import org.springframework.ai.embedding.EmbeddingModel;
+import org.springframework.ai.vectorstore.SearchRequest;
+import org.springframework.ai.vectorstore.VectorStore;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.FileSystemResource;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 public class AdventureService {
+    //private final DataRagService dataRagService;
     private final ChatClient chatClient;
     private StoryStatus storyStatus;
+    //private final PromptTemplate ragTemplate;
+
+    /*
+    @Autowired
+    private EmbeddingModel embeddingModel;
+
+    public float[] embed(String text) {
+        return embeddingModel.embed(text);
+    }
+
+    */
 
 
     //setting up memory advisor so that the story and choices are remembered
     @Autowired
     public AdventureService(ChatClient.Builder builder, ChatMemory chatMemory) {
+        //this.dataRagService = dataRagService;
+        /*
+        this.ragTemplate = new PromptTemplate(
+                "Always use at least two features of this car: {carInfo} in every"
+                        + "part of the story. And always mention the car model by name and how cool it is."
+        );
+        */
         this.chatClient = builder
                 .defaultAdvisors(MessageChatMemoryAdvisor.builder(chatMemory).build())
                 .build();
@@ -73,6 +95,8 @@ public class AdventureService {
 
     */
 
+
+
     public ChatResponse storyInitializer(String genre, int numCharacters, String nameDescription, int choices, String complexity, String location) {
         this.storyStatus = new StoryStatus();
 
@@ -85,7 +109,8 @@ public class AdventureService {
                 + "Total choices in the story: {choices}, these can range from 5, 10 and up to 20."
                 + "Number of choices per turn: {complexity}, that is: (High: 5 choices per turn), (Med: 3 choices), (Low: 2 choices)"
                 + "Location where the story takes place: {location}"
-                + "Provide the user with exactly {choices} choices, one below the other with the text Choices as title, separate from the story. Don't provide anything below that.";
+                + "Provide the user with exactly {choices} choices, one below the other with the text Choices as title, "
+                        + "separate from the story. Don't provide anything below the choices.";
 
         PromptTemplate promptTemplate = new PromptTemplate(template);
 
@@ -110,6 +135,7 @@ public class AdventureService {
     }
 
     public ChatResponse storyProgress(String lastChoice) {
+        //String carInfo = dataRagService.getAllCarInfo();
 
         this.storyStatus.setLastChoice(lastChoice);
 
@@ -125,6 +151,7 @@ public class AdventureService {
         variables.put("lastChoice", lastChoice);
         variables.put("choicesLeft", storyStatus.getChoicesLeft());
         variables.put("choicesNumber", storyStatus.getChoicesNumber());
+        //variables.put("carInfo", carInfo);
 
         String template = "You're narrating a choose your own adventure story."
                 + "Context:\n"
@@ -134,12 +161,13 @@ public class AdventureService {
                 + "Task:\n"
                 + "-Continue the story from the context.\n"
                 + "-Describe what follows.\n"
-                + "Generate exactly {choicesNumber} story appropriate choices for the player to choose from. Each choice " +
-                "must be distinct and relevant.\n For every choice the user selects, let the characters be affected by " +
-                "them, be it in a positive or negative way, so the story progresses. Physical and mental state should be " +
-                "affected by choices. Write the next part of the story according to the {story} story so far and the " +
-                "last choice by the user: {lastChoice}";
-
+                + "Generate exactly {choicesNumber} story appropriate choices for the player to choose from, and" +
+                "nothing else below. Each choice must be distinct and relevant.\n For every choice the user selects," +
+                "let the characters be affected by them, be it in a positive or negative way, so the story progresses." +
+                "Physical and mental state should be affected by choices. Write the next part of the story according to "+
+                "the {story} story so far";
+                //" and the last choice by the user: {lastChoice} and always make sure to include" +
+                //"one or two features of this car: {carInfo} and mention it by the model.";
 
         PromptTemplate promptTemplate = new PromptTemplate(template);
         Prompt prompt = promptTemplate.create(variables);

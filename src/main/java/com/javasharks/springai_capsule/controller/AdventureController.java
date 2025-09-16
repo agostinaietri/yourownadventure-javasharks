@@ -2,13 +2,12 @@ package com.javasharks.springai_capsule.controller;
 
 import com.javasharks.springai_capsule.StoryStatus;
 import com.javasharks.springai_capsule.service.AdventureService;
+import com.javasharks.springai_capsule.service.DataRagService;
 import com.javasharks.springai_capsule.service.OllamaService;
 import org.springframework.ai.chat.client.ChatClient;
-import org.springframework.ai.chat.memory.ChatMemory;
-import org.springframework.ai.chat.memory.ChatMemoryRepository;
-import org.springframework.ai.chat.memory.MessageWindowChatMemory;
 import org.springframework.ai.chat.model.ChatResponse;
 import org.springframework.ai.converter.BeanOutputConverter;
+import org.springframework.ai.vectorstore.VectorStore;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -21,7 +20,6 @@ import org.springframework.ai.image.ImagePrompt;
 import org.springframework.ai.image.ImageResponse;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-//import org.springframework.ai.openai.OpenAiImageOptions;
 
 import java.io.IOException;
 import java.lang.reflect.Array;
@@ -39,8 +37,11 @@ public class AdventureController {
 
     @Autowired
     private OllamaService aiService;
-    private ChatClient.Builder chatClientBuilder;
     private ChatClient chatClient;
+    @Autowired
+    DataRagService dataRagService;
+    @Autowired
+    private AdventureService adventureService;
 
     // client for generating image
     /*
@@ -83,8 +84,6 @@ public class AdventureController {
     }
     */
 
-    @Autowired
-    private AdventureService adventureService;
 
     /*
     // method that will be called upon generating the initial part of the story and the ending
@@ -161,6 +160,8 @@ public class AdventureController {
 
     @PostMapping("/progress")
     public String progressStory(@RequestParam("choice") String lastChoice, Model model) {
+
+       // VectorStore vectorStore = dataRagService.addDataInVectorStore();
 
         ChatResponse content = adventureService.storyProgress(lastChoice);
         String progressResponse = content.getResult().getOutput().getText();
