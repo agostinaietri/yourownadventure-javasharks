@@ -78,7 +78,8 @@ public class AdventureController {
     }
 
     @GetMapping("/form")
-    public String showForm() {
+    public String showForm(Model model) {
+        model.addAttribute("showForm", true);
         return "AdventureHelper.html";
     }
 
@@ -117,8 +118,7 @@ public class AdventureController {
         model.addAttribute("story", story);
         model.addAttribute("choicesResponse", Arrays.asList(choicesResponse));
         //model.addAttribute("image", image);
-        boolean showForm = true;
-        model.addAttribute("showForm", showForm);
+        model.addAttribute("showForm", false);
 
         return "AdventureHelper.html";
     }
@@ -145,6 +145,7 @@ public class AdventureController {
         model.addAttribute("story", storyUpdate);
         model.addAttribute("lastChoice", lastChoice);
         model.addAttribute("choicesResponse", Arrays.asList(choicesResponse));
+        model.addAttribute("showForm", false);
 
         boolean isProgress = true;
 

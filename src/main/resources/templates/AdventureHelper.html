@@ -48,8 +48,7 @@
 <body>
 <div class="container">
     <h2>Choose your Own Adventure! With SpringAI</h2>
-    <!--<div th:if="${!showForm}">-->
-        <form action="#" th:action="@{/chat/start}" th:method="post">
+        <form  th:if="${showForm}" action="#" th:action="@{/chat/start}" th:method="post">
             <div class="form-group">
                 <label for="genre">Enter a Genre:</label>
                 <input type="text" id="genre" name="genre" placeholder="E.g., Fantasy, Action, Drama, Thriller..." required>
@@ -102,7 +101,7 @@
             </div>
             <button type="submit">Start story</button>
         </form>
-    <!--</div>-->
+    </div>
 
     <!--
     <div class="response" th:if="${response}" style="max-width: 600px; margin: 20px auto; padding: 20px; background-color: #e7f3fe; border: 1px solid #b3d7ff; border-radius: 8px;">
