@@ -142,7 +142,7 @@
         <div class="progressResponse" th:if="${progressResponse}" style="max-width: 600px; margin: 20px auto; padding: 20px; background-color: #e7f3fe; border: 1px solid #b3d7ff; border-radius: 8px;">
             <h2 style="color: #333;">Response:</h2>
             <p th:text="${story}"></p>
-            <p th:text="${choicesLeft}"></p>
+            <p th:text="${complexityLeft}"></p>
             <p style="color: #333;"><strong>Last choice:</strong></p><p th:text="${lastChoice}"></p>
             <p style="color: #333;"><strong>Choices:</strong></p><p th:text="${choicesNumber}"></p>
             <form action="/chat/progress" method="post">

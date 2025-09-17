@@ -12,14 +12,16 @@ public class StoryStatus {
 
     private String story;
     private String lastChoice;
-    private int choicesLeft;
+    private int complexityLeft;
     private int choicesNumber;
+    private int complexity;
 
     public void eraseSession(StoryStatus storyStatus) {
         this.story = "";
         lastChoice = "";
-        choicesLeft = 0;
+        complexityLeft = 0;
         choicesNumber = 0;
+        complexity = 0;
     }
 
     public void setStoryEnded(boolean b) {
@@ -37,12 +39,12 @@ public class StoryStatus {
         this.story = " " + newStoryPart;
     }
 
-    public int getChoicesLeft() {
-        return this.choicesLeft;
+    public int getComplexityLeft() {
+        return this.complexityLeft;
     }
 
-    public void setChoicesLeft(int choicesLeft) {
-        this.choicesLeft = choicesLeft;
+    public void setComplexityLeft(int complexityLeft) {
+        this.complexityLeft = complexityLeft;
     }
 
     public void setLastChoice(String lastChoice) {
@@ -55,5 +57,12 @@ public class StoryStatus {
 
     public void setChoicesNumber(int choices) {
         this.choicesNumber = choices;
+    }
+    public int getComplexity() {
+        return this.complexity;
+    }
+
+    public void setComplexity(int complexity) {
+        this.complexity = complexity;
     }
 }

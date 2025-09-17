@@ -88,7 +88,7 @@ public class AdventureController {
             @RequestParam int numCharacters,
             @RequestParam String nameDescription,
             @RequestParam int choices,
-            @RequestParam String complexity,
+            @RequestParam int complexity,
             @RequestParam String location,
             Model model)
     {

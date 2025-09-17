@@ -27,7 +27,7 @@ public class AdventureService {
                 .build();
     }
 
-    public ChatResponse storyInitializer(String genre, int numCharacters, String nameDescription, int choices, String complexity, String location) {
+    public ChatResponse storyInitializer(String genre, int numCharacters, String nameDescription, int choices, int complexity, String location) {
         this.storyStatus = new StoryStatus();
 
         String template =
@@ -37,7 +37,7 @@ public class AdventureService {
                 + "Number of characters: {numCharacters}"
                 + "Description and name of main character: {nameDescription}"
                 + "Total choices in the story: {choices}, these can range from 5, 10 and up to 20."
-                + "Number of choices per turn: {complexity}, that is: (High: 5 choices per turn), (Med: 3 choices), (Low: 2 choices)"
+                + "Number of parts in the story: {complexity}, that is: (High: 5 choices per turn), (Med: 3 choices), (Low: 2 choices)"
                 + "Location where the story takes place: {location}"
                 + "Provide the user with exactly {choices} choices, one below the other with the text Choices as title, separate from the story. Don't provide anything below that.";
 
@@ -50,6 +50,7 @@ public class AdventureService {
         ChatResponse response = chatClient.prompt(prompt).call().chatResponse();
 
         String content = response.getResult().getOutput().getText();
+        content.replaceAll("\\*\\*", "");
         String[] parts = content.split("Choices:", 2);
 
         // updates game session
@@ -57,8 +58,10 @@ public class AdventureService {
 
         this.storyStatus.setStory(initialStory);
         this.storyStatus.setStoryEnded(false);
-        this.storyStatus.setChoicesLeft(choices);
+        this.storyStatus.setComplexityLeft(complexity);
         this.storyStatus.setChoicesNumber(choices);
+        //complexity as in "parts of the story"
+        this.storyStatus.setComplexity(complexity);
 
         return response;
     }
@@ -67,7 +70,7 @@ public class AdventureService {
 
         this.storyStatus.setLastChoice(lastChoice);
 
-        if(this.storyStatus.getChoicesLeft() <= 0) {
+        if(this.storyStatus.getComplexityLeft() <= 0) {
             this.storyStatus.setStoryEnded(true);
             this.storyStatus.eraseSession(this.storyStatus);
             ChatResponse endingResponse = endStory();
@@ -77,13 +80,13 @@ public class AdventureService {
         Map<String, Object> variables = new HashMap<>();
         variables.put("story", storyStatus.getStory());
         variables.put("lastChoice", lastChoice);
-        variables.put("choicesLeft", storyStatus.getChoicesLeft());
+        variables.put("complexityLeft", storyStatus.getComplexityLeft());
         variables.put("choicesNumber", storyStatus.getChoicesNumber());
 
         String template = "You're narrating a choose your own adventure story."
                 + "Context:\n"
                 + "-Story: {story}\n"
-                + "-Choices remaining: {choicesLeft}."
+                + "-Complexity remaining: {complexityLeft}."
                 + "-Last choice: {lastChoice}"
                 + "Task:\n"
                 + "-Continue the story from the context.\n"
@@ -100,12 +103,13 @@ public class AdventureService {
 
         ChatResponse progressResponse = chatClient.prompt(prompt).call().chatResponse();
         String content = progressResponse.getResult().getOutput().getText();
+        content.replaceAll("\\*\\*", "");
         String[] parts = content.split("Choices:", 2);
         String newStoryPart = parts[0].trim();
 
         //update game session
         this.storyStatus.setStory(newStoryPart);
-        this.storyStatus.setChoicesLeft(storyStatus.getChoicesLeft()-1);
+        this.storyStatus.setComplexityLeft(storyStatus.getComplexityLeft()-1);
 
         return progressResponse;
 
