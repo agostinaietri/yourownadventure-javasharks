@@ -2,8 +2,10 @@ package com.javasharks.springai_capsule;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.domain.EntityScan;
 
 @SpringBootApplication
+@EntityScan(basePackages = "springai_capsule")
 public class ChooseYourOwnAdventureSpringAiApplication {
 
 	public static void main(String[] args) {

@@ -1,5 +1,6 @@
 package com.javasharks.springai_capsule.service;
 
+import com.javasharks.springai_capsule.RagService;
 import com.javasharks.springai_capsule.StoryStatus;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.chat.client.advisor.MessageChatMemoryAdvisor;
@@ -17,11 +18,13 @@ import java.util.Map;
 public class AdventureService {
     private final ChatClient chatClient;
     private StoryStatus storyStatus;
+    private final RagService ragService;
 
 
     //setting up memory advisor so that the story and choices are remembered
     @Autowired
-    public AdventureService(ChatClient.Builder builder, ChatMemory chatMemory) {
+    public AdventureService(ChatClient.Builder builder, ChatMemory chatMemory, RagService ragService) {
+        this.ragService = ragService;
         this.chatClient = builder
                 .defaultAdvisors(MessageChatMemoryAdvisor.builder(chatMemory).build())
                 .build();
@@ -69,6 +72,7 @@ public class AdventureService {
     public ChatResponse storyProgress(String lastChoice) {
 
         this.storyStatus.setLastChoice(lastChoice);
+        String context = String.join("\n", ragService.getContext());
 
         if(this.storyStatus.getComplexityLeft() <= 0) {
             this.storyStatus.setStoryEnded(true);
@@ -82,6 +86,7 @@ public class AdventureService {
         variables.put("lastChoice", lastChoice);
         variables.put("complexityLeft", storyStatus.getComplexityLeft());
         variables.put("choicesNumber", storyStatus.getChoicesNumber());
+        variables.put("context", context);
 
         String template = "You're narrating a choose your own adventure story."
                 + "Context:\n"
@@ -95,7 +100,9 @@ public class AdventureService {
                 "must be distinct and relevant.\n For every choice the user selects, let the characters be affected by " +
                 "them, be it in a positive or negative way, so the story progresses. Physical and mental state should be " +
                 "affected by choices. Write the next part of the story according to the {story} story so far and the " +
-                "last choice by the user: {lastChoice}";
+                "last choice by the user: {lastChoice}. Also, include a car in the story, mention it by name "
+                + "(Megalodon by SharkCars) and mention one or two features of it and how cool and modern it is."
+                + " features and information of the car can be found in the context: {context}";
 
 
         PromptTemplate promptTemplate = new PromptTemplate(template);
