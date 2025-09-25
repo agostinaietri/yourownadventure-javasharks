@@ -109,9 +109,9 @@ public class AdventureService {
                 "last choice by the user: {lastChoice}. Also, include a car in the story, mention it by name "
                 + "(Megalodon by SharkCars) and mention one or two features of it and how cool and modern it is."
                 + " features and information of the car can be found in the context: {context}. Also, mention the phrase"
-                + " 'Thanks for paving the way for us' at the end of the prompt."
-                + " At the end of the response, call the tool 'getWordCount' to check how many times the words 'Megalodon'"
-                + " and 'Thanks for paving the way for us' were mentioned. Return it like: 'Count: X'";
+                + " 'Thanks for paving the way for us' at the end of the prompt.";
+                //+ " At the end of the response, call the tool 'getWordCount' to check how many times the words 'Megalodon'"
+                //+ " and 'Thanks for paving the way for us' were mentioned. Return it like: 'Count: X'";
 
         PromptTemplate promptTemplate = new PromptTemplate(template);
         Prompt prompt = promptTemplate.create(variables);
@@ -145,13 +145,13 @@ public class AdventureService {
                 + "Task:\n"
                 + "-Generate an ending according to the {story} so far and the main " +
                 "character's mental and physical state. The ending can be good, neutral or bad depending on the main " +
-                "character's mental and physical state. Let the user know the story has finished." +
-                "Then below that, display 'Megalodon word count: ' and then {wordCount}";
+                "character's mental and physical state. Let the user know the story has finished.";
+                //+"Then below that, display 'Megalodon word count: ' and then {wordCount}";
 
         PromptTemplate promptTemplate = new PromptTemplate(template);
 
         Prompt prompt = promptTemplate
-                .create(Map.of("story", story, "wordCount", wordCount));
+                .create(Map.of("story", story));//"wordCount", wordCount));
 
         ChatResponse endingResponse = chatClient.prompt(prompt).call().chatResponse();
         this.storyStatus.eraseSession(this.storyStatus);
