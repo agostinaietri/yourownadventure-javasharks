@@ -66,6 +66,41 @@ public class AdventureController {
     }
     */
 
+    // folder where audio inputs will be saved
+    //private static final String UPLOAD_DIR = "/Users/agostina.lucia.ietri/Desktop/springai-audios";
+
+    /*
+    @PostMapping("/form/speechToText")
+    public String speechToText(@RequestParam("file") MultipartFile file, Model model,
+                               RedirectAttributes redirectAttributes) {
+        if(file.isEmpty()) {
+            model.addAttribute("message", "Please select a file to upload");
+            return "speechToText";
+        }
+
+        try {
+            // make sure directory exists
+            Path uploadDir = Paths.get(UPLOAD_DIR);
+            if(Files.notExists(uploadDir)) {
+                //create it if it doesn't
+                Files.createDirectories(uploadDir);
+            }
+
+            //save input file to folder
+            Path path = uploadDir.resolve(file.getOriginalFilename());
+            Files.write(path, file.getBytes(), StandardOpenOption.CREATE);
+            // generate text, add to model
+            String speechToText = service.speechToText(path.toString());
+            model.addAttribute("transcription", transcription);
+        } catch (IOException e) {
+            e.printStackTrace();
+            model.addAttribute("message", "Failed to upload file");
+        }
+
+        return "AdventureHelper.html";
+    }
+    */
+
     @GetMapping("/ask")
     public String generate(@RequestParam("promptMessage") String promptMessage) {
         //return aiService.generateResult(promptMessage);
@@ -163,20 +198,13 @@ public class AdventureController {
         model.addAttribute("endingResponse", endingResponse);
         //model.addAttribute("image", image);
 
+        //calling method for returning audio for ending
+        //byte[] audioBytes = adventureService.textToSpeech(story);
+        //String base64Audio = Base64.getEncoder().encodeToString(audioBytes);
+
+        //add audio to model
+        //model.addAttribute("audio-ending", base64Audio);
+
         return "AdventureHelper.html";
     }
-
-
-    /*
-    @Configuration
-    public static class ChatMemoryConfig {
-        @Bean
-        public ChatMemory chatMemory(ChatMemoryRepository repository) {
-            return MessageWindowChatMemory.builder()
-                    .chatMemoryRepository(repository)
-                    .maxMessages(20)
-                    .build();
-        }
-    }
-    */
 }

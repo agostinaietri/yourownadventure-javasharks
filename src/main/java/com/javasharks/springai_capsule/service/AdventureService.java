@@ -36,6 +36,49 @@ public class AdventureService {
                 .build();
     }
 
+    // inject audio model
+
+    //@Autowired
+    //private OpenAiAudioTranscriptionModel openAiAudioTranscriptionModel;
+
+    //@Autowired
+    //private OpenAiAudioSpeechModel openAiAudioSpeechModel;
+
+    // method that expects file to transcribe to English
+    /*
+    public String speechToText(String path) {
+        OpenAiAudioTranscriptionOptions options = OpenAiAudioTranscriptionOptions
+                .builder()
+                .withLanguage("en")
+                .withResponseFormat(TranscriptResponseFormat.TEXT)
+                .build();
+        AudioTranscriptionPrompt transcriptionPrompt = new AudioTranscription(
+                new FileSystemResource(path), options);
+        return openAiAudioTranscriptionModel.call(transcriptionPrompt).getResult().getOutput();
+    }
+    */
+
+    //method that returns audio from text input
+    /*
+    public byte[] textToSpeech(String text) {
+        return openAiAudioSpeechModel.call(text);
+    }
+    */
+
+    //model for audio transcription
+    //@Autowired
+    //private OpenAiAudioTranscriptionModel openAiAudioTranscriptionModel;
+
+    /*
+    //turns speech audio to text
+    public String speechToText(String path) {
+        AudioTranscriptionPrompt audioTranscriptionPrompt = new AudioTranscriptionPrompt(
+                new FileSystemResource(path));
+        return openAiAudioTranscriptionModel.call(audioTranscriptionPrompt).getResult().getOutput();
+    }
+
+    */
+
     public ChatResponse storyInitializer(String genre, int numCharacters, String nameDescription, int choices, int complexity, String location) {
         this.storyStatus = new StoryStatus();
 
